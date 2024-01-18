@@ -17,6 +17,9 @@ jobs:
       run: |
         helm repo add apache-airflow https://airflow.apache.org
         helm repo update
+    - name: Connection with Kubernetes cluster
+      run: |
+        kubectl config view --raw > ~/.kube/config
 
     - name: Upgrade Airflow
       run: |
