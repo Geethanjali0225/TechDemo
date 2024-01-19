@@ -9,21 +9,29 @@ jobs:
   deploy_airflow:
     runs-on: ubuntu-latest
 
+    env:
+      KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+      KUBE_CONTEXT: minikube
+      HELM_CHART_REPO: https://airflow.apache.org
+      HELM_RELEASE_NAME: airflow
+      HELM_VALUES_FILE: values.yaml
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Add Helm Repo & update
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        kubeconfig: ${{ KUBE_CONFIG_DATA }}
+        context: ${{ KUBE_CONTEXT }}
+
+    - name: Add Helm Repo & Update
       run: |
-        helm repo add apache-airflow https://airflow.apache.org
+        helm repo add apache-airflow ${{ HELM_CHART_REPO }}
         helm repo update
-        
+
     - name: Upgrade Airflow
       run: |
-        helm upgrade airflow apache-airflow/airflow -f values.yaml --debug
+        helm upgrade ${{ HELM_RELEASE_NAME }} apache-airflow/airflow -f ${{ HELM_VALUES_FILE }} --debug
 
-    - name: Port Forwarding
-      run: |
-        kubectl port-forward svc/airflow-webserver 9090:8080 &
-        sleep 10
-        curl http://localhost:9090
