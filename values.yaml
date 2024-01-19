@@ -324,7 +324,11 @@ priorityClasses: []
 #    * key (can be templated) is the name of the secret that will be created
 #    * value: an object with the standard 'data' or 'stringData' key (or both).
 #          The value associated with those keys must be a string (can be templated)
-extraSecrets: {}
+extraSecrets: 
+  airflow-ssh-secret:
+    data: |
+      gitSshKey: 'c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCZ1FETzNrR2c1eXlIMmNGNzJ0T3R5WmY4aml0Z0dQdy8xaHNUS3ZEbUp5VURqR045bldoVUlUVHMxOVFuOUNpSGlSeVJCTk14cTlnQUV3ZVJCUXk0VVlXSzFqL045a3lGcDQzVGZETmpQckZRRDdGRU14bENFTmZhemxDZmtUYXNRekNyc3VpK2oyS2ZlTlhaODBJNUZ0QlhHRm5Ka1N4eVpiZEJPemM2TFpMNjBJN0ptamZmUHlTOElIaWpCWnU3R0hGMXRHRE1EQmNwbCsrWGE4MUNyMEFWbGVVLzY0bjl2WmRtbm5WUlllLzRwN3pEeG9kRUR3bjR5aXBsK2syZGc1LzU0N0pDNUZrcXNFbTRQOWNQT3d3YTdySk5oSktvWWRIUVNWSjRVTVg5TnBvODZRMTJiemlUVWZtT2pZdVpmYVNzWE4xUGNEc2VETERTM2VSdVB4a1VwVWZDVklmcURNZW5CbWh5bTlmelNobU9JNSt4ajJHV3ZlbkdRUy9OQTJVU2RCcGNRVDBrL2E1RU1wMG1hUXdIYnFzcmc3UE1rdEQ4QktqR3dhNit4TjJzdVdjWlF0MFFQZXZxRDdzTkE4RXpubXBvR3dsSmIyUHZiMXg3ancwZmtCanFDS2lPSkFQOHlOLzhBdG90V1pHWHl1WnFPYXhzWnl5UjBTTC9KbnM9IHNpZ21vaWRAZ2VldGhhbmphbGkuY29tCg=='
+
 # eg:
 # extraSecrets:
 #   '{{ .Release.Name }}-airflow-connections':
@@ -2350,7 +2354,7 @@ dags:
     # Annotations for dags PVC
     annotations: {}
     # Enable persistent volume for storing dags
-    enabled: false
+    enabled: true
     # Volume size for dags
     size: 1Gi
     # If using a custom storageClass, pass name here
@@ -2362,7 +2366,7 @@ dags:
     ## optional subpath for dag volume mount
     subPath: ~
   gitSync:
-    enabled: true
+    enabled: false
 
     # git repo clone url
     # ssh example: git@github.com:apache/airflow.git

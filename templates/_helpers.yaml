@@ -184,7 +184,7 @@ If release name contains chart name it will be used as a full name.
 
 {{/*  Git ssh key volume */}}
 {{- define "git_sync_ssh_key_volume" }}
-- name: git-sync-ssh-key
+- name: airflow-ssh-secret
   secret:
     secretName: {{ .Values.dags.gitSync.sshKeySecret }}
     defaultMode: 288
@@ -253,7 +253,7 @@ If release name contains chart name it will be used as a full name.
   - name: dags
     mountPath: /git
   {{- if .Values.dags.gitSync.sshKeySecret }}
-  - name: git-sync-ssh-key
+  - name: airflow-ssh-secret
     mountPath: /etc/git-secret/ssh
     readOnly: true
     subPath: gitSshKey
