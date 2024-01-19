@@ -33,5 +33,5 @@ jobs:
 
     - name: Upgrade Airflow
       run: |
-        helm upgrade airflow apache-airflow/airflow -f values.yaml --debug
+        helm upgrade --install airflow apache-airflow/airflow -f values.yaml --debug
 
