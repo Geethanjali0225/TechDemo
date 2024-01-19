@@ -13,23 +13,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        kubeconfig: ${{ runner.workspace }}/.kube/config
+
     - name: Add Helm Repo
       run: |
         helm repo add apache-airflow https://airflow.apache.org
         helm repo update
         
-    - name: Connection with Kubernetes cluster
-      run: |
-        mkdir -p ${{ runner.workspace }}/.kube
-        kubectl config view --raw > ${{ runner.workspace }}/.kube/config
-
-
     - name: Upgrade Airflow
       run: |
         helm upgrade airflow apache-airflow/airflow -f values.yaml --debug
 
     - name: Port Forwarding
       run: |
-        kubectl port-forward svc/airflow-webserver 9090:9090 &
+        kubectl port-forward svc/airflow-webserver 9090:8080 &
         sleep 10
         curl http://localhost:9090
