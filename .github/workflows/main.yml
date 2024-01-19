@@ -13,10 +13,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        kubeconfig: ${{ runner.workspace }}/.kube/config
+    - name: Connection with Kubernetes cluster
+      run: |
+       mkdir -p ${{ runner.workspace }}/.kube
+       echo "$KUBE_CONFIG_DATA" | base64 -d > ${{ runner.workspace }}/.kube/config
+       kubectl config use-context minikube
 
     - name: Add Helm Repo
       run: |
