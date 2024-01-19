@@ -17,8 +17,11 @@ jobs:
       HELM_VALUES_FILE: values.yaml
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+       ref: ${{ github.event.inputs.branch }}
+       path: ${{ github.sha }}
 
     # - name: Set up kubectl
     #   uses: azure/setup-kubectl@v1
