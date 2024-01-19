@@ -28,10 +28,10 @@ jobs:
 
     - name: Add Helm Repo & Update
       run: |
-        helm repo add apache-airflow ${{ HELM_CHART_REPO }}
+        helm repo add apache-airflow https://airflow.apache.org
         helm repo update
 
     - name: Upgrade Airflow
       run: |
-        helm upgrade ${{ HELM_RELEASE_NAME }} apache-airflow/airflow -f ${{ HELM_VALUES_FILE }} --debug
+        helm upgrade airflow apache-airflow/airflow -f values.yaml --debug
 
