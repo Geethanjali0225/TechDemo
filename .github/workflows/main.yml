@@ -20,11 +20,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        kubeconfig: ${{ KUBE_CONFIG_DATA }}
-        context: ${{ KUBE_CONTEXT }}
+    # - name: Set up kubectl
+    #   uses: azure/setup-kubectl@v1
+    #   with:
+    #     kubeconfig: ${{ KUBE_CONFIG_DATA }}
+    #     context: ${{ KUBE_CONTEXT }}
 
     - name: Add Helm Repo & Update
       run: |
