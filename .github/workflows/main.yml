@@ -13,12 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Connection with Kubernetes cluster
-      run: |
-       mkdir -p ${{ runner.workspace }}/.kube
-       echo "$KUBE_CONFIG_DATA" | base64 -d > ${{ runner.workspace }}/.kube/config
-       kubectl config use-context minikube
-
     - name: Add Helm Repo
       run: |
         helm repo add apache-airflow https://airflow.apache.org
