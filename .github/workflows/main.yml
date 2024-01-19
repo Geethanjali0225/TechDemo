@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy_airflow:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     env:
       KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
