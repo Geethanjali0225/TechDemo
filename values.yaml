@@ -744,7 +744,7 @@ scheduler:
   #    hostnames:
   #      - "foo.remote"
   extraVolumes:
-  - name: git-sync-ssh-key
+  - name: airflow-ssh-secret
     secret:
         secretName: airflow-ssh-secret
 
