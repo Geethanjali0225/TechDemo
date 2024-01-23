@@ -743,10 +743,7 @@ scheduler:
   #  - ip: "10.1.2.3"
   #    hostnames:
   #      - "foo.remote"
-  volumes:
-  - name: git_sync_ssh_key
-    secret:
-        secretName: airflow-ssh-secret
+  
 
   # If the scheduler stops heartbeating for 5 minutes (5*60s) kill the
   # scheduler and let Kubernetes restart it
