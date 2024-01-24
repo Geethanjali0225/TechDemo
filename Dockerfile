@@ -1,4 +1,4 @@
 FROM apache/airflow:2.7.1
-WORKDIR /home/sigmoid/TechDemo
+WORKDIR /opt/airflow
 COPY dags .
 # RUN pip install python
