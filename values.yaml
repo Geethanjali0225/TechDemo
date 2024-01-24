@@ -2415,9 +2415,10 @@ dags:
     # If you are using an ssh private key, you can additionally
     # specify the content of your known_hosts file, example:
     #
-    # knownHosts: |
+    knownHosts: |
     #    <host1>,<ip1> <key1>
     #    <host2>,<ip2> <key2>
+      github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDO3kGg5yyH2cF72tOtyZf8jitgGPw/1hsTKvDmJyUDjGN9nWhUITTs19Qn9CiHiRyRBNMxq9gAEweRBQy4UYWK1j/N9kyFp43TfDNjPrFQD7FEMxlCENfazlCfkTasQzCrsui+j2KfeNXZ80I5FtBXGFnJkSxyZbdBOzc6LZL60I7JmjffPyS8IHijBZu7GHF1tGDMDBcpl++Xa81Cr0AVleU/64n9vZdmnnVRYe/4p7zDxodEDwn4yipl+k2dg5/547JC5FkqsEm4P9cPOwwa7rJNhJKoYdHQSVJ4UMX9Npo86Q12bziTUfmOjYuZfaSsXN1PcDseDLDS3eRuPxkUpUfCVIfqDMenBmhym9fzShmOI5+xj2GWvenGQS/NA2USdBpcQT0k/a5EMp0maQwHbqsrg7PMktD8BKjGwa6+xN2suWcZQt0QPevqD7sNA8EznmpoGwlJb2Pvb1x7jw0fkBjqCKiOJAP8yN/8AtotWZGXyuZqOaxsZyyR0SL/Jns=
 
     # interval between git sync attempts in seconds
     # high values are more likely to cause DAGs to become out of sync between different components
