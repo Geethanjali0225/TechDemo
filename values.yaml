@@ -744,7 +744,7 @@ scheduler:
   #    hostnames:
   #      - "foo.remote"
   extraVolumes:
-  - name: airflow-ssh-secret
+  - name: git-sync-ssh-key
     secret:
         secretName: airflow-ssh-secret
 
@@ -2370,12 +2370,12 @@ dags:
     ## optional subpath for dag volume mount
     subPath: ~
   gitSync:
-    enabled: true
+    enabled: false
 
     # git repo clone url
     # ssh example: git@github.com:apache/airflow.git
     # https example: https://github.com/apache/airflow.git
-    repo: https://github.com/Geethanjali0225/TechDemo.git
+    repo: https://github.com/Geethanjali0225/airflow-on-k8s.git
     branch: main
     rev: HEAD
     depth: 1
@@ -2383,7 +2383,7 @@ dags:
     maxFailures: 0
     # subpath within the repo where dags are located
     # should be "" if dags are at repo root
-    subPath: "dags"
+    subPath: "airflow/dags"
     # if your repo needs a user name password
     # you can load them to a k8s secret like the one below
     #   ---
