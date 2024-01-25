@@ -1,4 +1,9 @@
 
+"""
+### Tutorial Documentation
+Documentation that goes along with the Airflow tutorial located
+[here](https://airflow.apache.org/tutorial.html)
+"""
 from __future__ import annotations
 
 # [START tutorial]
@@ -67,7 +72,14 @@ t2 = BashOperator(
 
     # [START documentation]
 t1.doc_md = textwrap.dedent(
-    
+        """\
+    #### Task Documentation
+    You can document your task using the attributes `doc_md` (markdown),
+    `doc` (plain text), `doc_rst`, `doc_json`, `doc_yaml` which gets
+    rendered in the UI's Task Instance Details page.
+    ![img](http://montcs.bloomu.edu/~bobmon/Semesters/2012-01/491/import%20soul.png)
+    **Image Credit:** Randall Munroe, [XKCD](https://xkcd.com/license.html)
+    """
     )
 
 dag.doc_md = __doc__  # providing that you have a docstring at the beginning of the DAG; OR
