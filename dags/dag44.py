@@ -14,7 +14,7 @@ default_args = {
 
 # Instantiate the DAG
 dag = DAG(
-    'tutorial dag123',
+    'tutorial dag',
     default_args=default_args,
     description='A simple example DAG',
     schedule_interval=timedelta(days=1),  # Run the DAG daily
