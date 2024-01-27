@@ -19,15 +19,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      # with:
-      #  ref: ${{ github.event.inputs.branch }}
-      #  path: ${{ github.sha }}
 
-    # - name: Set up kubectl
-    #   uses: azure/setup-kubectl@v1
-    #   with:
-    #     kubeconfig: ${{ KUBE_CONFIG_DATA }}
-    #     context: ${{ KUBE_CONTEXT }}
 
     - name: Add Helm Repo & Update
       run: |
