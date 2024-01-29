@@ -24,18 +24,18 @@ jobs:
       id: find_modified_dags
       run: |
         # Assuming DAG files are in the dags/ directory. Adjust the path as needed.
-        MODIFIED_DAGS=$(git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep '^dags/.*\.py$' || true)
-        ADDED_DAGS=$(git diff --name-status ${{ github.sha }}^ ${{ github.sha }} | grep '^A.*dags/.*\.py$' | sed 's/^A\tdags\///' || true)
-        DELETED_DAGS=$(git diff --name-status ${{ github.sha }}^ ${{ github.sha }} | grep '^D.*dags/.*\.py$' | sed 's/^D\tdags\///' || true)
+        MODIFIED_DAGS=$(git diff --name-only HEAD^ HEAD -- dags/ | grep '\.py$' || true)
+        ADDED_DAGS=$(git diff --name-status HEAD^ HEAD -- dags/ | grep '^A' | sed 's/^A\tdags\///' | grep '\.py$' || true)
+        DELETED_DAGS=$(git diff --name-status HEAD^ HEAD -- dags/ | grep '^D' | sed 's/^D\tdags\///' | grep '\.py$' || true)
 
         echo "Modified DAGs: $MODIFIED_DAGS"
         echo "Added DAGs: $ADDED_DAGS"
         echo "Deleted DAGs: $DELETED_DAGS"
 
         # Set output variables
-        echo "::set-output name=modified_dags::$MODIFIED_DAGS"
-        echo "::set-output name=added_dags::$ADDED_DAGS"
-        echo "::set-output name=deleted_dags::$DELETED_DAGS"
+        echo "modified_dags=$MODIFIED_DAGS" >> $GITHUB_ENV
+        echo "added_dags=$ADDED_DAGS" >> $GITHUB_ENV
+        echo "deleted_dags=$DELETED_DAGS" >> $GITHUB_ENV
 
     - name: Add Helm Repo & Update
       run: |
@@ -45,9 +45,9 @@ jobs:
     - name: Upgrade Airflow
       run: |
         # Use the modified, added, and deleted DAGs to generate Helm values dynamically
-        MODIFIED_DAGS=${{ steps.find_modified_dags.outputs.modified_dags }}
-        ADDED_DAGS=${{ steps.find_modified_dags.outputs.added_dags }}
-        DELETED_DAGS=${{ steps.find_modified_dags.outputs.deleted_dags }}
+        MODIFIED_DAGS=${{ env.modified_dags }}
+        ADDED_DAGS=${{ env.added_dags }}
+        DELETED_DAGS=${{ env.deleted_dags }}
 
         if [ -n "$MODIFIED_DAGS" ] || [ -n "$ADDED_DAGS" ] || [ -n "$DELETED_DAGS" ]; then
           # Display messages based on the changes
