@@ -24,18 +24,9 @@ jobs:
       id: find_modified_dags
       run: |
         # Assuming DAG files are in the dags/ directory. Adjust the path as needed.
-        MODIFIED_DAGS=$(git diff --name-only HEAD^ HEAD -- dags/ | grep '\.py$' || true)
-        ADDED_DAGS=$(git diff --name-status HEAD^ HEAD -- dags/ | grep '^A' | sed 's/^A\tdags\///' | grep '\.py$' || true)
-        DELETED_DAGS=$(git diff --name-status HEAD^ HEAD -- dags/ | grep '^D' | sed 's/^D\tdags\///' | grep '\.py$' || true)
-
+        MODIFIED_DAGS=$(git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep '^dags/.*\.py$' || true)
         echo "Modified DAGs: $MODIFIED_DAGS"
-        echo "Added DAGs: $ADDED_DAGS"
-        echo "Deleted DAGs: $DELETED_DAGS"
-
-        # Set output variables
-        echo "modified_dags=$MODIFIED_DAGS" >> $GITHUB_ENV
-        echo "added_dags=$ADDED_DAGS" >> $GITHUB_ENV
-        echo "deleted_dags=$DELETED_DAGS" >> $GITHUB_ENV
+        echo "::set-output name=modified_dags::$MODIFIED_DAGS"
 
     - name: Add Helm Repo & Update
       run: |
@@ -44,54 +35,23 @@ jobs:
 
     - name: Upgrade Airflow
       run: |
-        # Use the modified, added, and deleted DAGs to generate Helm values dynamically
-        MODIFIED_DAGS=${{ env.modified_dags }}
-        ADDED_DAGS=${{ env.added_dags }}
-        DELETED_DAGS=${{ env.deleted_dags }}
-
-        if [ -n "$MODIFIED_DAGS" ] || [ -n "$ADDED_DAGS" ] || [ -n "$DELETED_DAGS" ]; then
-          # Display messages based on the changes
-          if [ -n "$MODIFIED_DAGS" ]; then
-            echo "Modified DAGs: $MODIFIED_DAGS"
-          fi
-
-          if [ -n "$ADDED_DAGS" ]; then
-            echo "Added DAGs: $ADDED_DAGS"
-            # Add logic to handle added DAGs (e.g., deploy or configure)
-          fi
-
-          if [ -n "$DELETED_DAGS" ]; then
-            echo "Deleted DAGs: $DELETED_DAGS"
-            # Add logic to handle deleted DAGs (e.g., undeploy or cleanup)
-          fi
-
-          # Generate Helm values directly as a string
-          HELM_VALUES_STRING=""
+        # Use the modified DAGs to generate Helm values dynamically
+        MODIFIED_DAGS=${{ steps.find_modified_dags.outputs.modified_dags }}
+        if [ -n "$MODIFIED_DAGS" ]; then
+          # Create a temporary values file with only the modified DAGs
+          TMP_VALUES_FILE=$(mktemp)
+          echo "dags:" > $TMP_VALUES_FILE
           for DAG_FILE in $MODIFIED_DAGS; do
             DAG_NAME=$(basename "$DAG_FILE" .py)
-            HELM_VALUES_STRING+="dags:
-              - $DAG_NAME
-            "
+            echo "  - $DAG_NAME" >> $TMP_VALUES_FILE
           done
-
-          # Add logic for added DAGs
-          for DAG_FILE in $ADDED_DAGS; do
-            DAG_NAME=$(basename "$DAG_FILE" .py)
-            # Add logic to handle added DAGs (e.g., deploy or configure)
-            HELM_VALUES_STRING+="dags:
-              - $DAG_NAME
-            "
-          done
-
-          # Add logic for deleted DAGs
-          for DAG_FILE in $DELETED_DAGS; do
-            DAG_NAME=$(basename "$DAG_FILE" .py)
-            # Add logic to handle deleted DAGs (e.g., undeploy or cleanup)
-          done
-
-          # Upgrade Helm chart using the dynamically generated values
-          helm upgrade --install airflow apache-airflow/airflow --set "$HELM_VALUES_STRING" --debug
+          
+          # Upgrade Helm chart using the temporary values file
+          helm upgrade --install airflow apache-airflow/airflow -f $TMP_VALUES_FILE --debug
+          
+          # Remove the temporary values file
+          rm $TMP_VALUES_FILE
         else
-          # No modified, added, or deleted DAGs, use the default values file
+          # No modified DAGs, use the default values file
           helm upgrade --install airflow apache-airflow/airflow -f values.yaml --debug
         fi
