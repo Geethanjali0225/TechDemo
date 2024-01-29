@@ -24,9 +24,11 @@ jobs:
       id: find_modified_dags
       run: |
         # Assuming DAG files are in the dags/ directory. Adjust the path as needed.
-        MODIFIED_DAGS=$(git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep '^dags/.*\.py$' || true)
+        BASE_COMMIT=$(git rev-parse ${{ github.event.before }} || echo "HEAD^")
+        MODIFIED_DAGS=$(git diff --name-only $BASE_COMMIT HEAD | grep '^dags/.*\.py$' || true)
         echo "Modified DAGs: $MODIFIED_DAGS"
-        echo "::set-output name=modified_dags::$MODIFIED_DAGS"
+        echo "modified_dags=$MODIFIED_DAGS" >> $GITHUB_ENV
+
 
     - name: Add Helm Repo & Update
       run: |
