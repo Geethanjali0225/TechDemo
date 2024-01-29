@@ -23,7 +23,7 @@ jobs:
     - name: Identify Modified DAGs
       id: find_modified_dags
       run: |
-        # Assuming DAG files are in the dags/ directory. Adjust the path as needed.
+        
         BASE_COMMIT=$(git rev-parse ${{ github.event.before }} || echo "HEAD^")
         MODIFIED_DAGS=$(git diff --name-only $BASE_COMMIT HEAD | grep '^dags/.*\.py$' || true)
         echo "Modified DAGs: $MODIFIED_DAGS"
