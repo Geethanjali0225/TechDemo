@@ -20,6 +20,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Identify Modified DAGs
+      id: find_modified_dags
+      run: |
+        # Assuming DAG files are in the dags/ directory. Adjust the path as needed.
+        MODIFIED_DAGS=$(git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep '^dags/.*\.py$' || true)
+        echo "Modified DAGs: $MODIFIED_DAGS"
+        echo "::set-output name=modified_dags::$MODIFIED_DAGS"
 
     - name: Add Helm Repo & Update
       run: |
@@ -28,5 +35,23 @@ jobs:
 
     - name: Upgrade Airflow
       run: |
-        helm upgrade --install airflow apache-airflow/airflow -f values.yaml --debug
-
+        # Use the modified DAGs to generate Helm values dynamically
+        MODIFIED_DAGS=${{ steps.find_modified_dags.outputs.modified_dags }}
+        if [ -n "$MODIFIED_DAGS" ]; then
+          # Create a temporary values file with only the modified DAGs
+          TMP_VALUES_FILE=$(mktemp)
+          echo "dags:" > $TMP_VALUES_FILE
+          for DAG_FILE in $MODIFIED_DAGS; do
+            DAG_NAME=$(basename "$DAG_FILE" .py)
+            echo "  - $DAG_NAME" >> $TMP_VALUES_FILE
+          done
+          
+          # Upgrade Helm chart using the temporary values file
+          helm upgrade --install airflow apache-airflow/airflow -f $TMP_VALUES_FILE --debug
+          
+          # Remove the temporary values file
+          rm $TMP_VALUES_FILE
+        else
+          # No modified DAGs, use the default values file
+          helm upgrade --install airflow apache-airflow/airflow -f values.yaml --debug
+        fi
