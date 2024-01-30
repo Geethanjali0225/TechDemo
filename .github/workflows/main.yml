@@ -25,7 +25,7 @@ jobs:
       run: |
         MODIFIED_DAGS=$(git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep 'dags/.*\.py' || true)
         echo "Modified DAGs: $MODIFIED_DAGS"
-        echo "::set-output name=modified_dags::$MODIFIED_DAGS"
+        echo "MODIFIED_DAGS=$MODIFIED_DAGS" >> $GITHUB_ENV
 
     - name: Add Helm Repo & Update
       run: |
@@ -36,7 +36,7 @@ jobs:
       id: get_pod_name
       run: |
         POD_NAME=$(kubectl get pods --namespace default -l "release=${{ env.HELM_RELEASE_NAME }}" -o jsonpath="{.items[0].metadata.name}")
-        echo "::set-output name=pod_name::$POD_NAME"
+        echo "POD_NAME=$POD_NAME" >> $GITHUB_ENV
       continue-on-error: true  # Ignore errors if no pod is found, as it might not be created yet.
 
     - name: Update Modified DAGs
@@ -45,7 +45,7 @@ jobs:
         IFS=$'\n' read -rd '' -a DAGS <<<"${{ steps.modified_dags.outputs.modified_dags }}"
         for DAG in "${DAGS[@]}"; do
           echo "Updating DAG: $DAG"
-          kubectl cp $DAG ${{ steps.get_pod_name.outputs.pod_name }}:/dags/$DAG
+          kubectl cp $DAG $POD_NAME:/dags/$DAG
         done
 
     # - name: Upgrade Airflow
