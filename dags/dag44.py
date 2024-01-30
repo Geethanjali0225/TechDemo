@@ -5,7 +5,7 @@ from airflow.operators.python_operator import PythonOperator
 
 # Define default_args dictionary to specify default parameters for the DAG
 default_args = {
-    'owner': 'Airflow',
+    'owner': 'airflow',
     'start_date': datetime.utcnow(),
     'depends_on_past': False,
     'retries': 1,
@@ -14,7 +14,7 @@ default_args = {
 
 # Instantiate the DAG
 dag = DAG(
-    'example_dag',
+    'demo_dag',
     default_args=default_args,
     description='Example DAG',
     schedule_interval=timedelta(days=1),
