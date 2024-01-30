@@ -48,6 +48,6 @@ jobs:
           kubectl cp $DAG ${{ steps.get_pod_name.outputs.pod_name }}:/dags/$DAG
         done
 
-    - name: Upgrade Airflow
-      run: |
-        helm upgrade --install airflow apache-airflow/airflow -f values.yaml --debug
+    # - name: Upgrade Airflow
+    #   run: |
+    #     helm upgrade --install airflow apache-airflow/airflow -f values.yaml --debug
