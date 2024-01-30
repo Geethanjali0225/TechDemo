@@ -35,7 +35,7 @@ jobs:
     - name: Get Airflow Pod Name
       id: get_pod_name
       run: |
-        POD_NAME=$(kubectl get pods --namespace <namespace> -l "release=${{ env.HELM_RELEASE_NAME }}" -o jsonpath="{.items[0].metadata.name}")
+        POD_NAME=$(kubectl get pods --namespace default -l "release=${{ env.HELM_RELEASE_NAME }}" -o jsonpath="{.items[0].metadata.name}")
         echo "::set-output name=pod_name::$POD_NAME"
       continue-on-error: true  # Ignore errors if no pod is found, as it might not be created yet.
 
