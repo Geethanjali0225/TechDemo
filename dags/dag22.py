@@ -11,7 +11,7 @@ default_args = {
 }
 
 dag = DAG(
-    'changing_dag',
+    'dag22',
     default_args=default_args,
     description='A simple DAG example',
     schedule_interval=timedelta(days=1),
