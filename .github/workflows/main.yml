@@ -20,11 +20,20 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-
     - name: Add Helm Repo & Update
       run: |
         helm repo add apache-airflow https://airflow.apache.org
         helm repo update
-    - name: Upgrade Airflow
+
+    - name: Deploy Modified DAGs
       run: |
-        helm upgrade --install airflow apache-airflow/airflow -f values.yaml --debug
+        # git clone https://github.com/your-username/your-repo.git
+        # cd your-repo
+        changed_files=$(git diff --name-only $GITHUB_SHA^..$GITHUB_SHA)
+        dags_directory="/dags"
+        for file in $changed_files; do
+          if [[ $file == "$dags_directory/"* && $file == *".py" ]]; then
+            kubectl apply -f $file
+            echo "Deployed $file"
+          fi
+        done
