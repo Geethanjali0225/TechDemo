@@ -27,8 +27,8 @@ jobs:
 
     - name: Deploy Modified DAGs
       run: |
-        # git clone https://github.com/your-username/your-repo.git
-        # cd your-repo
+        git clone https://github.com/Geethanjali0225/TechDemo.git
+        cd TechDemo
         changed_files=$(git diff --name-only $GITHUB_SHA^..$GITHUB_SHA)
         dags_directory="/dags"
         for file in $changed_files; do
