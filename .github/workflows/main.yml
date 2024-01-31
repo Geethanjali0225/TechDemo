@@ -30,7 +30,7 @@ jobs:
         git clone https://github.com/Geethanjali0225/TechDemo.git
         cd TechDemo
         changed_files=$(git diff --name-only $GITHUB_SHA^..$GITHUB_SHA)
-        dags_directory="path/to/your/dags"
+        dags_directory="/dags"
         for file in $changed_files; do
           if [[ $file == "$dags_directory/"* && $file == *".py" ]]; then
             kubectl apply -f $file --force
