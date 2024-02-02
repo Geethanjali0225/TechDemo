@@ -10,7 +10,7 @@ default_args = {
 }
 
 dag = DAG(
-    'demo_dag',
+    'dag44',
     default_args=default_args,
     description='A simple example DAG',
     schedule_interval='@daily',
